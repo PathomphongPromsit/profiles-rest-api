@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from django.conf.urls import include """viewset"""
+from django.conf.urls import include #"""viewset"""
 
 from rest_framework.routers import DefaultRouter
 
