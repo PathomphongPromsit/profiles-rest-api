@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
-
 # Create your models here.
 
 class UserProfileManager(BaseUserManager):
@@ -13,18 +12,18 @@ class UserProfileManager(BaseUserManager):
         """Creates a new user profile object."""
 
         if not email:
-            raise ValueError('Users must havae an email address')
-        
+            raise ValueError('Users must have an email address.')
+
         email = self.normalize_email(email)
         user = self.model(email=email, name=name)
 
         user.set_password(password)
         user.save(using=self._db)
-        
+
         return user
-    
+
     def create_superuser(self, email, name, password):
-        """Create and saves a new superuser with given details."""
+        """Creates and saves a new superuser with given details."""
 
         user = self.create_user(email, name, password)
 
@@ -33,10 +32,11 @@ class UserProfileManager(BaseUserManager):
 
         user.save(using=self._db)
 
+        return user
 
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
-    """Respents a "user profile" inside oursystem."""
+    """Respents a "user profile" inside our system."""
 
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
@@ -49,14 +49,29 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['name']
 
     def get_full_name(self):
-        """Used to get a user full name"""
+        """Used to get a users full name."""
 
         return self.name
+
     def get_short_name(self):
-        """Used to get a user short name"""
+        """Used to get a users short name."""
 
         return self.name
 
     def __str__(self):
-        """Django user this when it needs to comvert the objec to a string"""
+        """Django uses this when it needs to convert the object to a string"""
+
         return self.email
+
+
+class ProfileFeedItem(models.Model):
+    """Profile status update."""
+
+    user_profile = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Return the model as a string."""
+
+        return self.status_text
